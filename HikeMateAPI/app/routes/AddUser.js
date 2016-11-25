@@ -8,7 +8,7 @@ module.exports = {
 	 var results = [];
 	 
 	 //check if data is valid
-	if(req.body.UserName == "", req.body.Email == "", req.body.Password == ""){ //empty
+	if(req.body.UserName == "" || req.body.Email == "" || req.body.Password == ""){ //empty
 		return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
 	}
 	var username = req.body.UserName + '';

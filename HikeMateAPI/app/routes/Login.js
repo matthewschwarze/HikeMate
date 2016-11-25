@@ -15,12 +15,14 @@ module.exports = {
 			var dbUsername;
 			var dbPassword;
 			var dbSalt;
+			var dbUid;
 			var result = '';
-			var query = client.query({text:'SELECT "UserName", "Password", "Salt" FROM "Users" WHERE "UserName" = $1',values: [username]}, function(err, result){
+			var query = client.query({text:'SELECT "UserName", "Password", "Salt", "uid" FROM "Users" WHERE "UserName" = $1',values: [username]}, function(err, result){
 			}).on('row', function(row) {
-				dbUsername = row.username;
+				dbUsername = row.UserName;
 				dbPassword = row.Password;
 				dbSalt = row.Salt;
+				dbUid = row.uid;
 				done();
 		   				
 		   }).on('error', function() {
@@ -40,8 +42,7 @@ module.exports = {
 						});
 	      			return res.json({
 			          success: true,
-			          message: 'Enjoy your token!',
-			          token: token
+			          data: {token: token, id: dbUid}
 			        });
 	      		}
 	      		else{

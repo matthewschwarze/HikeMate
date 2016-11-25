@@ -5,6 +5,7 @@
 var router = express.Router();
 var Useradd = require('./routes/AddUser');
 var Login = require('./routes/Login');
+var UpdateLocation = require('./routes/UpdateLocation');
 var Test = require('./routes/Test');
 
 	router.route('/AddUser').post(Useradd.AddUser); 
@@ -43,6 +44,7 @@ var Test = require('./routes/Test');
   }
 });
 
+router.route('/UpdateLocation').post(UpdateLocation.UpdateLocation);
 router.route('/test').get(Test.Test); 
 
 	
