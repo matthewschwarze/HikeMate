@@ -8,9 +8,8 @@ app         = express();
 bodyParser  = require('body-parser');
 morgan      = require('morgan');
 pg = require('pg');
+jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
-
-var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
 var config = require('./config'); // get our config file
 var User   = require('./models/user'); // get our mongoose model
 var db = require('./DatabaseConnection');
