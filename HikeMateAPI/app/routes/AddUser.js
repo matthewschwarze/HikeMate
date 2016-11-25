@@ -5,7 +5,6 @@ const validator = require('validator');
 module.exports = {
 	AddUser: function (req, res, next){
 	  // Grab data from http request
-	 console.log(req.body);
 	 var results = [];
 	 
 	 //check if data is valid
