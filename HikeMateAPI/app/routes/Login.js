@@ -37,7 +37,7 @@ module.exports = {
 	      		var user = {"UserName" : dbUsername, "Password" : dbPassword, "Salt" : "dbSalt"};
 	      		var givenPassword = sha1(password + dbSalt)
 	      		if(givenPassword == dbPassword){
-						var token = jwt.sign(user, app.get('superSecret'), {
+						var token = jwt.sign(user, (dbUid + ''), {
 							expiresIn : "1440m" // expires in 24 hours
 						});
 	      			return res.json({

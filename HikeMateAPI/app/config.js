@@ -1,7 +1,6 @@
 
 module.exports = {
 
-    'secret': 'ilovescotchyscotch',
     'database': {
 		  user: 'HikeMateAdmin', //env var: PGUSER 
 		  database: 'HikeMate', //env var: PGDATABASE 
