@@ -7,6 +7,7 @@ var Useradd = require('./routes/AddUser');
 var Login = require('./routes/Login');
 var UpdateLocation = require('./routes/UpdateLocation');
 var GetLocation = require('./routes/GetLocation');
+var FriendRoutes = require('./routes/FriendRoutes');
 var Test = require('./routes/Test');
 
 	router.route('/AddUser').post(Useradd.AddUser); 
@@ -47,6 +48,7 @@ var Test = require('./routes/Test');
 
 router.route('/UpdateLocation').post(UpdateLocation.UpdateLocation);
 router.route('/GetLocation').post(GetLocation.GetLocation);
+router.route('/AddFriend').post(FriendRoutes.AddFriend);
 router.route('/test').get(Test.Test); 
 
 	
