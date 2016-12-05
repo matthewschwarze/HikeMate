@@ -18,6 +18,15 @@ module.exports = {
 		// else invite already sent, return pending invite
 		recordExists(res, id, friendId);	
 	}
+	,GetFriends: function (req, res, next){
+	var results = [];
+	 //check if data is valid
+	if(req.body.Uid === ""){ //empty
+		return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+	}
+	var id = req.body.Uid;
+	getAllFriends(res, id);
+	}
 }
 
 function recordExists(res, id, friendId){
@@ -115,4 +124,39 @@ function acceptFriend(res, id){
 		    });
 		});
 	});	
+}
+
+function getAllFriends(res, id){
+//return res.json({success: true, data: {message: "row not found"}});
+	pool.connect((err, client, done) => {
+	    // Handle connection errors
+	    if(err) {
+	      done();
+	      console.log(err);
+	     return res.status(500).json({success: false, data: err});
+	    } 
+	    	var friends = [];
+			var query = client.query('SELECT u1."UserName" As inituser, f."InitUser", u2."UserName" As recuser, f."RecUser" FROM "Friendship" f left JOIN "Users" u1 ON u1.uid = f."InitUser"  left JOIN "Users" u2 ON u2.uid = f."RecUser"  where (f."InitUser" = $1 OR f."RecUser" = $1) AND f."Active" = $2 AND f."Blocked" = $3',
+	   	[id, true, false], function(err, result){
+					if(err){
+						console.error('error running query', err);
+						return res.status(500).json({success: false, status: 500, data: err});
+					}
+				})
+				.on('row', function(row){
+					if(row.InitUser == id){ //you sent it
+						userName = row.recuser;
+						recId = row.RecUser;
+					}else{//friend sent it
+						userName = row.inituser;
+						recId = row.InitUser;
+					}					
+					var friend = {username: userName, Id: recId};
+					friends.push(friend);
+				})
+				.on('end', function(result) { //this point no user found
+		   		done();
+		   		return res.json({success: true, data: {message: "ok", friends}});		
+	    		});   
+	   });	
 }
