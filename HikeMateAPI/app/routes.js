@@ -50,6 +50,8 @@ router.route('/UpdateLocation').post(UpdateLocation.UpdateLocation);
 router.route('/GetLocation').post(GetLocation.GetLocation);
 router.route('/AddFriend').post(FriendRoutes.AddFriend);
 router.route('/GetFriends').post(FriendRoutes.GetFriends);
+router.route('/AcceptFriend').post(FriendRoutes.AcceptFriend);
+
 router.route('/test').get(Test.Test); 
 
 	

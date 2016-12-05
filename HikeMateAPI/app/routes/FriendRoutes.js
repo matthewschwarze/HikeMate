@@ -17,16 +17,27 @@ module.exports = {
 		//check if invite already exists, if init id is in the recive column set active to true
 		// else invite already sent, return pending invite
 		recordExists(res, id, friendId);	
+	},
+	GetFriends: function (req, res, next){
+		var results = [];
+		 //check if data is valid
+		if(req.body.Uid === ""){ //empty
+			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+		}
+		var id = req.body.Uid;
+		getAllFriends(res, id);
+	},
+	AcceptFriend: function (req, res, next){
+		var results = [];
+		 //check if data is valid
+		if(req.body.Uid === "" || req.body.friendId === ""){ //empty
+			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+		}
+		var id = req.body.Uid;
+		var friendId = req.body.friendId;
+		findRequest(res, id, friendId);
 	}
-	,GetFriends: function (req, res, next){
-	var results = [];
-	 //check if data is valid
-	if(req.body.Uid === ""){ //empty
-		return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
-	}
-	var id = req.body.Uid;
-	getAllFriends(res, id);
-	}
+	
 }
 
 function recordExists(res, id, friendId){
@@ -157,6 +168,35 @@ function getAllFriends(res, id){
 				.on('end', function(result) { //this point no user found
 		   		done();
 		   		return res.json({success: true, data: {message: "ok", friends}});		
+	    		});   
+	   });	
+}
+
+function findRequest(res, id, friendId){
+//return res.json({success: true, data: {message: "row not found"}});
+	pool.connect((err, client, done) => {
+	    // Handle connection errors
+	    if(err) {
+	      done();
+	      console.log(err);
+	     return res.status(500).json({success: false, data: err});
+	    } 
+			var query = client.query('SELECT * FROM "Friendship" where "InitUser" = $1 AND "RecUser" = $2 AND "Active" = $3',
+	   	[friendId, id, false], function(err, result){
+					if(err){
+						console.error('error running query', err);
+						return res.status(500).json({success: false, status: 500, data: err});
+					}
+				})
+				.on('row', function(row){
+						acceptFriend(res, row.Id);
+				})
+				.on('end', function(result) { //this point no user found
+					done();
+		   		if(result.rowCount == 0){
+		   			console.log("relationship does not exists");
+						return res.json({success: false, data: {message: "No request"}});
+		   		}
 	    		});   
 	   });	
 }
