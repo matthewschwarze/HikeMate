@@ -36,6 +36,15 @@ module.exports = {
 		var id = req.body.Uid;
 		var friendId = req.body.friendId;
 		findRequest(res, id, friendId);
+	}, 
+	GetFriendRequests: function (req, res, next){
+		var results = [];
+		 //check if data is valid
+		if(req.body.Uid === ""){ //empty
+			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+		}
+		var id = req.body.Uid;
+		getPendingRequests(res, id);
 	}
 	
 }
@@ -167,7 +176,7 @@ function getAllFriends(res, id){
 				})
 				.on('end', function(result) { //this point no user found
 		   		done();
-		   		return res.json({success: true, data: {message: "ok", friends}});		
+		   		return res.json({success: true, data: {friends}});		
 	    		});   
 	   });	
 }
@@ -197,6 +206,35 @@ function findRequest(res, id, friendId){
 		   			console.log("relationship does not exists");
 						return res.json({success: false, data: {message: "No request"}});
 		   		}
+	    		});   
+	   });	
+}
+
+function getPendingRequests(res, id){
+	pool.connect((err, client, done) => {
+	    // Handle connection errors
+	    if(err) {
+	      done();
+	      console.log(err);
+	     return res.status(500).json({success: false, data: err});
+	    } 
+	    	var friends = [];
+			var query = client.query('SELECT u1."UserName" As inituser, f."InitUser" FROM "Friendship" f JOIN "Users" u1 ON u1.uid = f."InitUser" where (f."RecUser" = $1) AND f."Active" = $2 AND f."Blocked" = $3',
+	   	[id, false, false], function(err, result){
+					if(err){
+						console.error('error running query', err);
+						return res.status(500).json({success: false, status: 500, data: err});
+					}
+				})
+				.on('row', function(row){
+					userName = row.inituser;
+					recId = row.InitUser;					
+					var friend = {username: userName, Id: recId};
+					friends.push(friend);
+				})
+				.on('end', function(result) { //this point no user found
+		   		done();
+		   		return res.json({success: true, data: {friends}});		
 	    		});   
 	   });	
 }
