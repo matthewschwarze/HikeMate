@@ -35,7 +35,7 @@ module.exports = {
 		}
 		var id = req.body.Uid;
 		var friendId = req.body.friendId;
-		findRequest(res, id, friendId);
+		findRequest(res, id, friendId, 'AcceptFriend');
 	}, 
 	GetFriendRequests: function (req, res, next){
 		var results = [];
@@ -45,8 +45,36 @@ module.exports = {
 		}
 		var id = req.body.Uid;
 		getPendingRequests(res, id);
+	},
+	DeleteFriend: function (req, res, next){
+		var results = [];
+		 
+		 //check if data is valid
+		if(req.body.Uid === "" || req.body.friendId === "" ){ //empty
+			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+		}
+		var id = req.body.Uid;
+		var friendId = req.body.friendId;
+		if(id == friendId){
+			return res.json({success: false, data: {message: "You can't delete yourself"}});
+		}
+		findRequest(res, id, friendId, 'DeleteFriend');
+		
+	},
+	BlockFriend: function (req, res, next){
+		var results = [];
+			 
+		 //check if data is valid
+		if(req.body.Uid === "" || req.body.friendId === "" ){ //empty
+			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+		}
+		var id = req.body.Uid;
+		var friendId = req.body.friendId;
+		if(id == friendId){
+			return res.json({success: false, data: {message: "You can't block yourself"}});
+		}
+		findRequest(res, id, friendId, 'BlockFriend');
 	}
-	
 }
 
 function recordExists(res, id, friendId){
@@ -181,7 +209,7 @@ function getAllFriends(res, id){
 	   });	
 }
 
-function findRequest(res, id, friendId){
+function findRequest(res, id, friendId, route){
 //return res.json({success: true, data: {message: "row not found"}});
 	pool.connect((err, client, done) => {
 	    // Handle connection errors
@@ -190,7 +218,9 @@ function findRequest(res, id, friendId){
 	      console.log(err);
 	     return res.status(500).json({success: false, data: err});
 	    } 
-			var query = client.query('SELECT * FROM "Friendship" where "InitUser" = $1 AND "RecUser" = $2 AND "Active" = $3',
+	    
+			if(route == 'AcceptFriend'){
+	   		var query = client.query('SELECT * FROM "Friendship" where "InitUser" = $1 AND "RecUser" = $2 AND "Active" = $3',
 	   	[friendId, id, false], function(err, result){
 					if(err){
 						console.error('error running query', err);
@@ -198,7 +228,7 @@ function findRequest(res, id, friendId){
 					}
 				})
 				.on('row', function(row){
-						acceptFriend(res, row.Id);
+					acceptFriend(res, row.Id);
 				})
 				.on('end', function(result) { //this point no user found
 					done();
@@ -206,7 +236,33 @@ function findRequest(res, id, friendId){
 		   			console.log("relationship does not exists");
 						return res.json({success: false, data: {message: "No request"}});
 		   		}
-	    		});   
+	    		});  
+			}else{
+				var query = client.query('SELECT * FROM "Friendship" where ("InitUser" = $1 AND "RecUser" = $2) OR ("InitUser" = $2 AND "RecUser" = $1)',
+	   		[id, friendId], function(err, result){
+					if(err){
+						console.error('error running query', err);
+						return res.status(500).json({success: false, status: 500, data: err});
+					}
+				})
+				.on('row', function(row){
+					switch (route){
+						case 'BlockFriend': alterFriendShip(res, row.Id, false);
+							break;
+						case 'DeleteFriend': alterFriendShip(res, row.Id, true);
+							break;
+					}
+					
+				})
+				.on('end', function(result) { //this point no user found
+					done();
+		   		if(result.rowCount == 0){
+		   			console.log("relationship does not exists");
+						return res.json({success: false, data: {message: "No request"}});
+		   		}
+	    		});  
+			}
+			 
 	   });	
 }
 
@@ -237,4 +293,51 @@ function getPendingRequests(res, id){
 		   		return res.json({success: true, data: {friends}});		
 	    		});   
 	   });	
+}
+
+function alterFriendShip(res, id, action){
+	pool.connect((err, client, done) => {
+	 // Handle connection errors
+	 if(err) {
+	 	done();
+	   console.log(err);
+	   return res.status(500).json({success: false, data: err});
+	 } 
+	 
+	 if(action){ //delete
+	 	var query = client.query('DELETE FROM "Friendship" where "Id" = $1 ',
+		[id], function(err, result){
+		
+		    if(err) {
+		    	done();
+		      //console.error('error running query', err);
+		      return res.status(500).json({success: false, status: 500, data: err});
+		    }
+	    	// SQL Query > Select Data
+		    // After all data is returned, close connection and return results
+		    query.on('end', () => {
+		     done();
+		     return res.json({success: true, data: {message: "Deleted"}});
+		    });
+		});
+	 }
+	 else{ //block
+	 	var query = client.query('UPDATE "Friendship" SET "Active" = $1, "Blocked" = $2 where "Id" = $3 ',
+		[false, true, id], function(err, result){
+		
+		    if(err) {
+		    	done();
+		      //console.error('error running query', err);
+		      return res.status(500).json({success: false, status: 500, data: err});
+		    }
+	    	// SQL Query > Select Data
+		    // After all data is returned, close connection and return results
+		    query.on('end', () => {
+		     done();
+		     return res.json({success: true, data: {message: "Blocked"}});
+		    });
+		});
+	 }
+		
+	});	
 }

@@ -52,6 +52,8 @@ router.route('/AddFriend').post(FriendRoutes.AddFriend);
 router.route('/GetFriends').post(FriendRoutes.GetFriends);
 router.route('/AcceptFriend').post(FriendRoutes.AcceptFriend);
 router.route('/GetFriendRequests').post(FriendRoutes.GetFriendRequests);
+router.route('/DeleteFriend').post(FriendRoutes.DeleteFriend);
+router.route('/BlockFriend').post(FriendRoutes.BlockFriend);
 
 router.route('/test').get(Test.Test); 
 
