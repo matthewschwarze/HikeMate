@@ -37,7 +37,8 @@ module.exports = {
 	      		var user = {"UserName" : dbUsername, "Password" : dbPassword, "Salt" : "dbSalt"};
 	      		var givenPassword = sha1(password + dbSalt)
 	      		if(givenPassword == dbPassword){
-						var token = jwt.sign(user, (dbUid + ''), {
+	      		console.log("ok " + dbPassword );
+						var token = jwt.sign(user, (dbPassword + ''), {
 							expiresIn : "1440m" // expires in 24 hours
 						});
 	      			return res.json({

@@ -8,8 +8,9 @@ var Login = require('./routes/Login');
 var UpdateLocation = require('./routes/UpdateLocation');
 var GetLocation = require('./routes/GetLocation');
 var FriendRoutes = require('./routes/FriendRoutes');
+var UpdateDetails = require('./routes/UpdateDetails');
 var Test = require('./routes/Test');
-
+var tokenSign = require('./tokenSign');
 	router.route('/AddUser').post(Useradd.AddUser); 
 	router.route('/Login').post(Login.Login); 
 	
@@ -24,7 +25,14 @@ var Test = require('./routes/Test');
   if (token) {
 
     // verifies secret and checks exp
-    jwt.verify(token, req.body.Uid, function(err, decoded) {      
+	var secret =  tokenSign.getSecret(req.body.Uid);
+
+	if(secret == ''){
+		return res.json({ success: false, message: 'Failed to authenticate token2.' });
+	}
+	else
+		console.log("ok " + secret );
+    jwt.verify(token, secret, function(err, decoded) {      
       if (err) {
         return res.json({ success: false, message: 'Failed to authenticate token.' });    
       } else {
@@ -54,6 +62,7 @@ router.route('/AcceptFriend').post(FriendRoutes.AcceptFriend);
 router.route('/GetFriendRequests').post(FriendRoutes.GetFriendRequests);
 router.route('/DeleteFriend').post(FriendRoutes.DeleteFriend);
 router.route('/BlockFriend').post(FriendRoutes.BlockFriend);
+router.route('/UpdatePassword').post(UpdateDetails.UpdatePassword)
 
 router.route('/test').get(Test.Test); 
 
