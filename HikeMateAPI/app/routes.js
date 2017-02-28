@@ -24,11 +24,11 @@ var tokenSign = require('./tokenSign');
   // decode token
   if (token) {
 
-    // verifies secret and checks exp
-	var secret =  tokenSign.getSecret(req.body.Uid);
+    // verifies secret and checks expire
+	var secret = tokenSign.getSecret(req.body.Uid); //this needs to waitied on, need to use promise + async 
 
 	if(secret == ''){
-		return res.json({ success: false, message: 'Failed to authenticate token2.' });
+		return res.json({ success: false, message: 'Failed to authenticate token.' });
 	}
 	else
 		console.log("ok " + secret );
