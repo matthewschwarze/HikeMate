@@ -25,22 +25,23 @@ var tokenSign = require('./tokenSign');
   if (token) {
 
     // verifies secret and checks expire
-	var secret = tokenSign.getSecret(req.body.Uid); //this needs to waitied on, need to use promise + async 
-
-	if(secret == ''){
-		return res.json({ success: false, message: 'Failed to authenticate token.' });
-	}
-	else
-		console.log("ok " + secret );
-    jwt.verify(token, secret, function(err, decoded) {      
-      if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' });    
-      } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;    
-        next();
-      }
-    });
+	tokenSign.getSecret(req.body.Uid, function(secret){
+		if(secret == ''){
+			return res.json({ success: false, message: 'Failed to authenticate token.' });
+		}
+		else {
+			console.log("ok " + secret );
+    		jwt.verify(token, secret, function(err, decoded) {      
+	      	if (err) {
+	        		return res.json({ success: false, message: 'Failed to authenticate token.' });    
+	      	} else {
+	        		// if everything is good, save to request for use in other routes
+	        		req.decoded = decoded;    
+	        		next();
+	      	}
+    		});
+ 		}
+	});  
 
   } else {
 
@@ -53,6 +54,24 @@ var tokenSign = require('./tokenSign');
     
   }
 });
+
+function checkValid(secret){
+	if(secret == ''){
+		return res.json({ success: false, message: 'Failed to authenticate token.' });
+	}
+	else {
+		console.log("ok " + secret );
+    jwt.verify(token, secret, function(err, decoded) {      
+      if (err) {
+        return res.json({ success: false, message: 'Failed to authenticate token.' });    
+      } else {
+        // if everything is good, save to request for use in other routes
+        req.decoded = decoded;    
+        next();
+      }
+    });
+ 	}
+}
 
 router.route('/UpdateLocation').post(UpdateLocation.UpdateLocation);
 router.route('/GetLocation').post(GetLocation.GetLocation);

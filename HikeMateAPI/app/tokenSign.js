@@ -1,6 +1,6 @@
 module.exports = {
 	
-	getSecret: function(Uid){
+	getSecret: function(Uid, callback){
 		var dbPassword;
 		pool.connect((err, client, done) => {
 				// Handle connection errors
@@ -20,17 +20,15 @@ module.exports = {
 			   }).on('error', function() {
 		      	console.error('error running query', err);
 		      	done();
-					return '';
+					return callback('');
 				}).on('end', function(result) { //this point no user found
-			      	console.log(result.rowCount + ' rows were received');
 			      	
 		      	if(result.rowCount == 1){ //must be the user as username is unique
 		      		//check if password matches
-		      		console.log("hi");
-							return dbPassword + '';
+							return callback(dbPassword + '');
 		      		}
 		      		else{
-		      			return '';
+		      			return callback('');
 		      		}
 		    	});
 		   });
