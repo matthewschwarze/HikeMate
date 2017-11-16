@@ -74,6 +74,19 @@ module.exports = {
 			return res.json({success: false, data: {message: "You can't block yourself"}});
 		}
 		findRequest(res, id, friendId, 'BlockFriend');
+	},
+	UnBlockFriend: function (req, res, next){
+		var results = [];
+		 //check if data is valid
+		if(req.body.Uid === "" || req.body.friendId === "" ){ //empty
+			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+		}
+		var id = req.body.Uid;
+		var friendId = req.body.friendId;
+		if(id == friendId){
+			return res.json({success: false, data: {message: "You can't block yourself"}});
+		}
+		findRequest(res, id, friendId, 'UnBlockFriend');
 	}
 }
 
@@ -184,7 +197,7 @@ function getAllFriends(res, id){
 	     return res.status(500).json({success: false, data: err});
 	    } 
 	    	var friends = [];
-			var query = client.query('SELECT u1."UserName" As inituser, f."InitUser", u2."UserName" As recuser, f."RecUser" FROM "Friendship" f left JOIN "Users" u1 ON u1.uid = f."InitUser"  left JOIN "Users" u2 ON u2.uid = f."RecUser"  where (f."InitUser" = $1 OR f."RecUser" = $1) AND f."Active" = $2 AND f."Blocked" = $3',
+			var query = client.query('SELECT u1."UserName" As inituser, f."InitUser", u2."UserName" As recuser, f."RecUser", f."Blocked" FROM "Friendship" f left JOIN "Users" u1 ON u1.uid = f."InitUser"  left JOIN "Users" u2 ON u2.uid = f."RecUser"  where (f."InitUser" = $1 OR f."RecUser" = $1) AND f."Active" = $2 AND (f."Blocked" = $3 OR f."InitBlockUser" = $1)',
 	   	[id, true, false], function(err, result){
 					if(err){
 						console.error('error running query', err);
@@ -199,7 +212,7 @@ function getAllFriends(res, id){
 						userName = row.inituser;
 						recId = row.InitUser;
 					}					
-					var friend = {username: userName, Id: recId};
+					var friend = {username: userName, Id: recId, Blocked:row.Blocked};
 					friends.push(friend);
 				})
 				.on('end', function(result) { //this point no user found
@@ -245,11 +258,13 @@ function findRequest(res, id, friendId, route){
 						return res.status(500).json({success: false, status: 500, data: err});
 					}
 				})
-				.on('row', function(row){
+				.on('row', function(row){ //these routes take the row id and make changes directly on the row
 					switch (route){
-						case 'BlockFriend': alterFriendShip(res, row.Id, false);
+						case 'BlockFriend': alterFriendShip(res, row.Id, "Block", null);
 							break;
-						case 'DeleteFriend': alterFriendShip(res, row.Id, true);
+						case 'DeleteFriend': alterFriendShip(res, row.Id, "Delete", null);
+							break;
+						case 'UnBlockFriend': alterFriendShip(res, row.Id, "unBlock", id);
 							break;
 					}
 					
@@ -295,7 +310,7 @@ function getPendingRequests(res, id){
 	   });	
 }
 
-function alterFriendShip(res, id, action){
+function alterFriendShip(res, id, action, uid){ //uid only used for unBlock to check user unblocking was one who blocked
 	pool.connect((err, client, done) => {
 	 // Handle connection errors
 	 if(err) {
@@ -303,8 +318,7 @@ function alterFriendShip(res, id, action){
 	   console.log(err);
 	   return res.status(500).json({success: false, data: err});
 	 } 
-	 
-	 if(action){ //delete
+	 if(action == "Delete"){ //delete
 	 	var query = client.query('DELETE FROM "Friendship" where "Id" = $1 ',
 		[id], function(err, result){
 		
@@ -321,13 +335,13 @@ function alterFriendShip(res, id, action){
 		    });
 		});
 	 }
-	 else{ //block
-	 	var query = client.query('UPDATE "Friendship" SET "Active" = $1, "Blocked" = $2 where "Id" = $3 ',
-		[false, true, id], function(err, result){
+	 else if (action == "Block"){ //block
+	 	var query = client.query('UPDATE "Friendship" SET "Active" = $1, "Blocked" = $2, "InitBlockUser" = $3 where "Id" = $3 ',
+		[true, true, id], function(err, result){
 		
 		    if(err) {
 		    	done();
-		      //console.error('error running query', err);
+		      console.error('error running query', err);
 		      return res.status(500).json({success: false, status: 500, data: err});
 		    }
 	    	// SQL Query > Select Data
@@ -337,6 +351,23 @@ function alterFriendShip(res, id, action){
 		     return res.json({success: true, data: {message: "Blocked"}});
 		    });
 		});
+	 }
+	 else{
+		 var query = client.query('UPDATE "Friendship" SET "Active" = $1, "Blocked" = $2, "InitBlockUser" = $3 where "Id" = $3 AND "InitBlockUser" = $4 ',
+		[true, false, id, uid], function(err, result){
+		
+		    if(err) {
+		    	done();
+		      console.error('error running query', err);
+		      return res.status(500).json({success: false, status: 500, data: err});
+		    }
+	    	// SQL Query > Select Data
+		    // After all data is returned, close connection and return results
+		    query.on('end', () => {
+		     done();
+		     return res.json({success: true, data: {message: "UnBlocked"}});
+		    });
+		}); 
 	 }
 		
 	});	

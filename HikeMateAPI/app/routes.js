@@ -80,6 +80,7 @@ router.route('/AcceptFriend').post(FriendRoutes.AcceptFriend);
 router.route('/GetFriendRequests').post(FriendRoutes.GetFriendRequests);
 router.route('/DeleteFriend').post(FriendRoutes.DeleteFriend);
 router.route('/BlockFriend').post(FriendRoutes.BlockFriend);
+router.route('/UnBlockFriend').post(FriendRoutes.UnBlockFriend);
 router.route('/UpdatePassword').post(UpdateDetails.UpdatePassword)
 
 router.route('/test').get(Test.Test); 

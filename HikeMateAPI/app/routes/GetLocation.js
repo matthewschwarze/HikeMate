@@ -2,7 +2,7 @@ module.exports = {
 	GetLocation: function (req, res, next){
 		var results = [];
 		 //check if data is valid
-		if(req.body.Uid === "" || req.body.RequestId === ""){ //empty
+		if(req.body.Uid === "" || req.body.RequestId === "" || req.body.RequestId === undefined || req.body.Uid === undefined){ //empty
 			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
 		}
 		var id = req.body.Uid;
