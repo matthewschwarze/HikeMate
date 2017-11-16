@@ -82,14 +82,14 @@ function update(res, req){
 					}
 				})
 				.on('end', function(result) { //this point no user found
-		   		console.log(result.rowCount + ' rows were received');
-		   		
-		   		if(result.rowCount == 1){
-		   			return res.json({success: true, data: {message: "row updated"}});
-		   		}
-		   		else{
-	      			return res.json({success: true, data: {message: "row not updated"}});
-	      		}
+					console.log(result.rowCount + ' rows were received');
+					
+					if(result.rowCount == 1){
+						return res.json({success: true, data: {message: "row updated"}});
+					}
+					else{				
+						return res.json({success: true, data: {message: "row not updated"}});
+					}
 	    		});   
 	   });	
 }
