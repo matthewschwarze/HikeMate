@@ -20,7 +20,6 @@ var tokenSign = require('./tokenSign');
 
   // check header or url parameters or post parameters for token
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
-
   // decode token
   if (token) {
 
@@ -32,7 +31,7 @@ var tokenSign = require('./tokenSign');
 		else {
 			console.log("ok " + secret );
     		jwt.verify(token, secret, function(err, decoded) {      
-	      	if (err) {
+	      	if (err) {		
 	        		return res.json({ success: false, message: 'Failed to authenticate token.' });    
 	      	} else {
 	        		// if everything is good, save to request for use in other routes
