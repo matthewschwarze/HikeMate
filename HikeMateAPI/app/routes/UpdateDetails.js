@@ -18,6 +18,22 @@ module.exports = {
 			return res.status(500).json({success: false, status: 500, data: {err: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 6 or more characters"}});
 		}
 		updatePassword(res, id, newPassword);	
+	},
+	UpdateEmail: function (req, res, next){
+	// Grab data from http request
+		var results = [];
+
+		//check if data is valid
+		if(req.body.Uid === "" || req.body.Email === ""){ //empty
+			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+		}
+		var id = req.body.Uid;
+		var email = req.body.Email;
+		validator.normalizeEmail(email, [true]) 
+		if(!validator.isEmail(email)){
+			return res.status(500).json({success: false, status: 500, data: {err: "Invalid email format"}});
+		}
+		updateEmail(res, id, email);	
 	}
 }
 
@@ -50,6 +66,34 @@ function updatePassword(res, id, password){
 				return res.json({success: false, data: {message: "Password Not Changed"}});
 			}else{
 				return res.json({success: true, data: {message: "Password Changed"}});
+			}
+		});   
+		
+	   });	
+}
+
+function updateEmail(res, id, email){
+	pool.connect((err, client, done) => {
+	    // Handle connection errors
+	    if(err) {
+			done();
+			console.log(err);
+			return res.status(500).json({success: false, data: err});
+	    } 
+			
+		var query = client.query('Update "Users" Set "Email" = $2 where "uid" = $1',
+		[id, email], function(err, result){
+			console.log('here');
+			if(err){
+				console.error('error running query', err);
+				return res.status(500).json({success: false, status: 500, data: err});
+			}
+		})
+		.on('end', function(result) { //this point no user found
+			if(result.rowCount == 0){
+				return res.json({success: false, data: {message: "Email Not Changed"}});
+			}else{
+				return res.json({success: true, data: {message: "Email Changed"}});
 			}
 		});   
 		

@@ -17,12 +17,10 @@ module.exports = {
 		      	done();
 					return callback('');
 				}).on('row', function(row) {
-					console.log("1 ");
 					dbPassword = row.Password;
 					done();
 			   				
 			   }).on('end', function(result) { //this point no user found
-			      	console.log("3 ");
 		      	if(result.rowCount == 1){ //must be the user as username is unique
 		      		//check if password matches
 							return callback(dbPassword + '');

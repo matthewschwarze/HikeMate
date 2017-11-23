@@ -29,7 +29,6 @@ var tokenSign = require('./tokenSign');
 			return res.json({ success: false, message: 'Failed to authenticate token.' });
 		}
 		else {
-			console.log("ok " + secret );
     		jwt.verify(token, secret, function(err, decoded) {      
 	      	if (err) {		
 	        		return res.json({ success: false, message: 'Failed to authenticate token.' });    
@@ -59,7 +58,6 @@ function checkValid(secret){
 		return res.json({ success: false, message: 'Failed to authenticate token.' });
 	}
 	else {
-		console.log("ok " + secret );
     jwt.verify(token, secret, function(err, decoded) {      
       if (err) {
         return res.json({ success: false, message: 'Failed to authenticate token.' });    
@@ -81,7 +79,8 @@ router.route('/GetFriendRequests').post(FriendRoutes.GetFriendRequests);
 router.route('/DeleteFriend').post(FriendRoutes.DeleteFriend);
 router.route('/BlockFriend').post(FriendRoutes.BlockFriend);
 router.route('/UnBlockFriend').post(FriendRoutes.UnBlockFriend);
-router.route('/UpdatePassword').post(UpdateDetails.UpdatePassword)
+router.route('/UpdatePassword').post(UpdateDetails.UpdatePassword);
+router.route('/UpdateEmail').post(UpdateDetails.UpdateEmail);
 
 router.route('/test').get(Test.Test); 
 
