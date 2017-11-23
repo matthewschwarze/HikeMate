@@ -10,11 +10,14 @@ var GetLocation = require('./routes/GetLocation');
 var FriendRoutes = require('./routes/FriendRoutes');
 var UpdateDetails = require('./routes/UpdateDetails');
 var Test = require('./routes/Test');
+var ResetPassword = require('./routes/ResetPassword');
 var tokenSign = require('./tokenSign');
 	router.route('/AddUser').post(Useradd.AddUser); 
 	router.route('/Login').post(Login.Login); 
+	router.route('/SendResetPassword').post(ResetPassword.SendResetPassword);
+	router.route('/ResetPassword').post(ResetPassword.ResetPassword);
 	
-	
+	console.log('1');
 	
 	router.use(function(req, res, next) {
 
