@@ -16,23 +16,26 @@ module.exports = {
 //sendreset flow, finduser : generate code ? exit email not exist -> generateCode : sendEmail ? exit some error
 //resetpassword flow, finduser : checkcode ? exit email not exist -> checkCode : resetPassword ? exit bad code
 
-function generateCode(email){ //use email as a seed + salted password??, issues; hacker could submit user email and reverse engineer because code(known) = email (known) + saltedPwd(not known), would be hard to get pword and salt as they are unknown so should be safe
+function generateCode(email){ //use email as a seed + salt + time
+	//get salt from db or use some other unique thing better
+	//random generate code with email + salt + time
 	//store code in db
+	//send email + code
 }
 
 function checkCode(code, email){ //use email in case they close the app and the app forgets uid for the reset(prob would have to request a new email sent anyway). s
-	
+	//get code from db based on email
 }
 
 function findUser(email){
-	
+	//find email in db
 }
 
 function sendEmail(email, code){
-	
+	//send emails
 }
 
 function resetPassword(password, email){
-	
+	//reset pword in db
 
 }
