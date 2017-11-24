@@ -34,7 +34,7 @@ module.exports = {
 		      	
 	      	if(result.rowCount == 1){ //must be the user as username is unique
 	      		//check if password matches
-	      		var user = {"UserName" : dbUsername, "Password" : dbPassword, "Salt" : "dbSalt"};
+	      		var user = {"UserName" : dbUsername, "Password" : dbPassword, "Salt" : dbSalt};
 	      		var givenPassword = sha1(password + dbSalt)
 	      		if(givenPassword == dbPassword){
 	      		console.log("ok " + dbPassword );

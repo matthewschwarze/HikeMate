@@ -8,6 +8,7 @@
     "jsonwebtoken": "^7.1.9",
     "morgan": "^1.7.0",
     "pg": "^6.1.0",
+    "seedrandom": "^2.4.3",
     "sha1": "^1.1.1",
     "validator": "^6.1.0"
   }
