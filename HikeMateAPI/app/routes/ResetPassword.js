@@ -1,5 +1,9 @@
 const crypto = require('crypto');
+var nodemailer = require('nodemailer');
 const seedrandom = require('seedrandom');
+var config = require('../config'); // get our config file;
+var transporter = nodemailer.createTransport(config.email);
+
 
 module.exports = {
 	ResetPassword: function (req, res, next){
@@ -109,8 +113,20 @@ function sendEmail(email, res, user, code){
 	//generate email
 	//send emails
 	console.log(code + ", ok");
-
-			
+	var mailOptions = {
+		from: 'matthew.schwarze@gmail.com',
+		to: email,
+		subject: 'Sending password reset code',
+		text: 'That here is your code: ' + code
+	};
+	transporter.sendMail(mailOptions, function(error, info){
+		if (error) {
+			return res.json({success: false, data: {err: error}});
+			console.log(error);
+		} else {
+			return res.json({success: true, data: {'Email sent: ': info.response}});;
+		}
+	});
 }
 
 function resetPassword(password, email){
