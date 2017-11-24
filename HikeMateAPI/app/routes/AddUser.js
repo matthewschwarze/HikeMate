@@ -9,24 +9,24 @@ module.exports = {
 	 
 	 //check if data is valid
 	if(req.body.UserName == "" || req.body.Email == "" || req.body.Password == ""){ //empty
-		return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+		return res.json({success: false, data: {err: "One or more fields cannot be blank"}});
 	}
 	var username = req.body.UserName + '';
 	var email = req.body.Email + '';
 	var password = req.body.Password + '';
 	
 	if(/^[a-zA-Z0-9-_]*$/.test(username) == false) {
-	    return res.status(500).json({success: false, status: 500, data: {err: "Username can only contain numbers, letters, underscores and hyphens"}});
+	    return res.json({success: false, data: {err: "Username can only contain numbers, letters, underscores and hyphens"}});
 	}
 	var regularExpression = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9%^*!@#$&()\\-_`.+,/\"]{6,}$/;
 	if(regularExpression.test(password) == false) {
-	    return res.status(500).json({success: false, status: 500, data: {err: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 6 or more characters"}});
+	    return res.json({success: false, data: {err: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 6 or more characters"}});
 	}
 	
 	
 	validator.normalizeEmail(email, [true]) 
 	if(!validator.isEmail(email)){
-		return res.status(500).json({success: false, status: 500, data: {err: "Invalid email format"}});
+		return res.json({success: false, data: {err: "Invalid email format"}});
 	}
 	 
 	  // Get a Postgres client from the connection pool
@@ -35,7 +35,7 @@ module.exports = {
 	    if(err) {
 	      done();
 	      console.log(err);
-	      return res.status(500).json({success: false, data: err});
+	      return res.status(500).json({success: false, data: err}); //can't connect
 	    }
 	    // SQL Query > Insert Data
 		
@@ -55,7 +55,7 @@ module.exports = {
 			    if(err) {
 			    	done();
 			      //console.error('error running query', err);
-			      return res.status(500).json({success: false, status: 500, data: err});
+			      return res.json({success: false, data: err});
 			    }
 		    	// SQL Query > Select Data
 			    // After all data is returned, close connection and return results

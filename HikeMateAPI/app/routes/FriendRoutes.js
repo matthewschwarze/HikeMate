@@ -5,7 +5,7 @@ module.exports = {
 	 
 	 //check if data is valid
 	if(req.body.Uid === "" || req.body.friendId === "" ){ //empty
-		return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+		return res.json({success: false, data: {err: "One or more fields cannot be blank"}});
 	}
 	var id = req.body.Uid;
 	var friendId = req.body.friendId;
@@ -22,7 +22,7 @@ module.exports = {
 		var results = [];
 		 //check if data is valid
 		if(req.body.Uid === ""){ //empty
-			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+			return res.json({success: false, data: {err: "One or more fields cannot be blank"}});
 		}
 		var id = req.body.Uid;
 		getAllFriends(res, id);
@@ -31,7 +31,7 @@ module.exports = {
 		var results = [];
 		 //check if data is valid
 		if(req.body.Uid === "" || req.body.friendId === ""){ //empty
-			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+			return res.json({success: false, data: {err: "One or more fields cannot be blank"}});
 		}
 		var id = req.body.Uid;
 		var friendId = req.body.friendId;
@@ -41,7 +41,7 @@ module.exports = {
 		var results = [];
 		 //check if data is valid
 		if(req.body.Uid === ""){ //empty
-			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+			return res.json({success: false, data: {err: "One or more fields cannot be blank"}});
 		}
 		var id = req.body.Uid;
 		getPendingRequests(res, id);
@@ -51,7 +51,7 @@ module.exports = {
 		 
 		 //check if data is valid
 		if(req.body.Uid === "" || req.body.friendId === "" ){ //empty
-			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+			return res.json({success: false, data: {err: "One or more fields cannot be blank"}});
 		}
 		var id = req.body.Uid;
 		var friendId = req.body.friendId;
@@ -66,7 +66,7 @@ module.exports = {
 			 
 		 //check if data is valid
 		if(req.body.Uid === "" || req.body.friendId === "" ){ //empty
-			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+			return res.json({success: false, data: {err: "One or more fields cannot be blank"}});
 		}
 		var id = req.body.Uid;
 		var friendId = req.body.friendId;
@@ -79,7 +79,7 @@ module.exports = {
 		var results = [];
 		 //check if data is valid
 		if(req.body.Uid === "" || req.body.friendId === "" ){ //empty
-			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+			return res.json({success: false, data: {err: "One or more fields cannot be blank"}});
 		}
 		var id = req.body.Uid;
 		var friendId = req.body.friendId;
@@ -103,7 +103,7 @@ function recordExists(res, id, friendId){
 	   	[id, friendId], function(err, result){
 					if(err){
 						console.error('error running query', err);
-						return res.status(500).json({success: false, status: 500, data: err});
+						return res.json({success: false, data: err});
 					}
 				})
 				.on('row', function(row){
@@ -148,7 +148,7 @@ function createRelationship(res, id, friendId){
 		    if(err) {
 		    	done();
 		      //console.error('error running query', err);
-		      return res.status(500).json({success: false, status: 500, data: err});
+		      return res.json({success: false, data: err});
 		    }
 	    	// SQL Query > Select Data
 		    // After all data is returned, close connection and return results
@@ -175,7 +175,7 @@ function acceptFriend(res, id){
 		    if(err) {
 		    	done();
 		      //console.error('error running query', err);
-		      return res.status(500).json({success: false, status: 500, data: err});
+		      return res.json({success: false, data: err});
 		    }
 	    	// SQL Query > Select Data
 		    // After all data is returned, close connection and return results
@@ -201,7 +201,7 @@ function getAllFriends(res, id){
 	   	[id, true, false], function(err, result){
 					if(err){
 						console.error('error running query', err);
-						return res.status(500).json({success: false, status: 500, data: err});
+						return res.json({success: false, data: err});
 					}
 				})
 				.on('row', function(row){
@@ -237,7 +237,7 @@ function findRequest(res, id, friendId, route){
 	   	[friendId, id, false], function(err, result){
 					if(err){
 						console.error('error running query', err);
-						return res.status(500).json({success: false, status: 500, data: err});
+						return res.json({success: false, data: err});
 					}
 				})
 				.on('row', function(row){
@@ -294,7 +294,7 @@ function getPendingRequests(res, id){
 	   	[id, false, false], function(err, result){
 					if(err){
 						console.error('error running query', err);
-						return res.status(500).json({success: false, status: 500, data: err});
+						return res.json({success: false, data: err});
 					}
 				})
 				.on('row', function(row){
@@ -325,7 +325,7 @@ function alterFriendShip(res, id, action, uid){ //uid only used for unBlock to c
 		    if(err) {
 		    	done();
 		      //console.error('error running query', err);
-		      return res.status(500).json({success: false, status: 500, data: err});
+		      return res.json({success: false, data: err});
 		    }
 	    	// SQL Query > Select Data
 		    // After all data is returned, close connection and return results
@@ -342,7 +342,7 @@ function alterFriendShip(res, id, action, uid){ //uid only used for unBlock to c
 		    if(err) {
 		    	done();
 		      console.error('error running query', err);
-		      return res.status(500).json({success: false, status: 500, data: err});
+		      return res.json({success: false, data: err});
 		    }
 	    	// SQL Query > Select Data
 		    // After all data is returned, close connection and return results
@@ -359,7 +359,7 @@ function alterFriendShip(res, id, action, uid){ //uid only used for unBlock to c
 		    if(err) {
 		    	done();
 		      console.error('error running query', err);
-		      return res.status(500).json({success: false, status: 500, data: err});
+		      return res.json({success: false, data: err});
 		    }
 	    	// SQL Query > Select Data
 		    // After all data is returned, close connection and return results

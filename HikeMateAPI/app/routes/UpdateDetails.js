@@ -15,7 +15,7 @@ module.exports = {
 		var newPassword = req.body.NewPassword
 		var regularExpression = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9%^*!@#$&()\\-_`.+,/\"]{6,}$/;
 		if(regularExpression.test(newPassword) == false) {
-			return res.status(500).json({success: false, status: 500, data: {err: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 6 or more characters"}});
+			return res.json({success: false, data: {err: "Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 6 or more characters"}});
 		}
 		updatePassword(res, id, newPassword);	
 	},
@@ -25,13 +25,13 @@ module.exports = {
 
 		//check if data is valid
 		if(req.body.Uid === "" || req.body.Email === ""){ //empty
-			return res.status(500).json({success: false, status: 500, data: {err: "One or more fields cannot be blank"}});
+			return res.json({success: false, data: {err: "One or more fields cannot be blank"}});
 		}
 		var id = req.body.Uid;
 		var email = req.body.Email;
 		validator.normalizeEmail(email, [true]) 
 		if(!validator.isEmail(email)){
-			return res.status(500).json({success: false, status: 500, data: {err: "Invalid email format"}});
+			return res.json({success: false, data: {err: "Invalid email format"}});
 		}
 		updateEmail(res, id, email);	
 	}
@@ -58,7 +58,7 @@ function updatePassword(res, id, password){
 			console.log('here');
 			if(err){
 				console.error('error running query', err);
-				return res.status(500).json({success: false, status: 500, data: err});
+				return res.json({success: false, data: err});
 			}
 		})
 		.on('end', function(result) { //this point no user found
@@ -86,7 +86,7 @@ function updateEmail(res, id, email){
 			console.log('here');
 			if(err){
 				console.error('error running query', err);
-				return res.status(500).json({success: false, status: 500, data: err});
+				return res.json({success: false, data: err});
 			}
 		})
 		.on('end', function(result) { //this point no user found

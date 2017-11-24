@@ -28,7 +28,7 @@ module.exports = {
 		   }).on('error', function() {
 	      	console.error('error running query', err);
 	      	done();
-				return res.status(500).json({success: false, status: 500, data: err});
+				return res.json({success: false, data: err});
 			}).on('end', function(result) { //this point no user found
 		      	console.log(result.rowCount + ' rows were received');
 		      	
@@ -47,10 +47,10 @@ module.exports = {
 			        });
 	      		}
 	      		else{
-	      			return res.status(500).json({success: false, status: 500, data: {err:"UserName Password combination does not match"}});
+	      			return res.json({success: false, data: {err:"UserName Password combination does not match"}});
 	      		}
 	      	}
-	      	return res.status(500).json({success: false, status: 500, data: {err: "no user found"}});
+	      	return res.json({success: false, data: {err: "no user found"}});
 	    	});
 	   }); 
 	}

@@ -18,7 +18,7 @@ module.exports = {
 	    	
 					if(err){
 						console.error('error running query', err);
-						return res.status(500).json({success: false, status: 500, data: err});
+						return res.json({success: false, data: err});
 					}
 				})
 				.on('end', function(result) { //this point no user found
@@ -50,7 +50,7 @@ function insert(res, req){
 	   	[req.body.Uid, req.body.UTC, req.body.Long, req.body.Lat], function(err, result){
 					if(err){
 						console.error('error running query', err);
-						return res.status(500).json({success: false, status: 500, data: err});
+						return res.json({success: false, data: err});
 					}
 				})
 				.on('end', function(result) { //this point no user found
@@ -78,7 +78,7 @@ function update(res, req){
 	   	[req.body.UTC, req.body.Long, req.body.Lat, req.body.Uid], function(err, result){
 					if(err){
 						console.error('error running query', err);
-						return res.status(500).json({success: false, status: 500, data: err});
+						return res.json({success: false, data: err});
 					}
 				})
 				.on('end', function(result) { //this point no user found

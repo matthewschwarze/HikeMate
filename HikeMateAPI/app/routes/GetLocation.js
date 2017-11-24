@@ -34,7 +34,7 @@ function getLocation(req, res, RequestId){
 			}).on('error', function() {
 					console.error('error running query', err);
 					done();
-					return res.status(500).json({success: false, status: 500, data: err});
+					return res.json({success: false, data: err});
 			}).on('end', function(result) { //this point no user found
 					console.log(result.rowCount + ' rows were received');
 
@@ -46,7 +46,7 @@ function getLocation(req, res, RequestId){
 						});
 					}
 					else{
-						return res.status(500).json({success: false, status: 500, data: {err:"could not get location"}});
+						return res.json({success: false, data: {err:"could not get location"}});
 					}
 				});
 		}); 
@@ -64,7 +64,7 @@ function canAccess(res, req, id, RequestId){
 	   	[id, true, false, RequestId], function(err, result){
 					if(err){
 						console.error('error running query', err);
-						return res.status(500).json({success: false, status: 500, data: err});
+						return res.json({success: false, data: err});
 					}
 				})
 				.on('end', function(result) { //this point no user found
