@@ -260,9 +260,9 @@ function findRequest(res, id, friendId, route){
 				})
 				.on('row', function(row){ //these routes take the row id and make changes directly on the row
 					switch (route){
-						case 'BlockFriend': alterFriendShip(res, row.Id, "Block", null);
+						case 'BlockFriend': alterFriendShip(res, row.Id, "Block", id);
 							break;
-						case 'DeleteFriend': alterFriendShip(res, row.Id, "Delete", null);
+						case 'DeleteFriend': alterFriendShip(res, row.Id, "Delete", id);
 							break;
 						case 'UnBlockFriend': alterFriendShip(res, row.Id, "unBlock", id);
 							break;
@@ -310,7 +310,7 @@ function getPendingRequests(res, id){
 	   });	
 }
 
-function alterFriendShip(res, id, action, uid){ //uid only used for unBlock to check user unblocking was one who blocked
+function alterFriendShip(res, id, action, uid){ //uid only used for unBlock to check user unblocking was one who blocked //actually need it so i can store who blocked
 	pool.connect((err, client, done) => {
 	 // Handle connection errors
 	 if(err) {
@@ -336,8 +336,8 @@ function alterFriendShip(res, id, action, uid){ //uid only used for unBlock to c
 		});
 	 }
 	 else if (action == "Block"){ //block
-	 	var query = client.query('UPDATE "Friendship" SET "Active" = $1, "Blocked" = $2, "InitBlockUser" = $3 where "Id" = $3 ',
-		[true, true, id], function(err, result){
+	 	var query = client.query('UPDATE "Friendship" SET "Active" = $1, "Blocked" = $2, "InitBlockUser" = $4 where "Id" = $3 ',
+		[true, true, id, uid], function(err, result){
 		
 		    if(err) {
 		    	done();
