@@ -353,8 +353,8 @@ function alterFriendShip(res, id, action, uid){ //uid only used for unBlock to c
 		});
 	 }
 	 else{
-		 var query = client.query('UPDATE "Friendship" SET "Active" = $1, "Blocked" = $2, "InitBlockUser" = $3 where "Id" = $3 AND "InitBlockUser" = $4 ',
-		[true, false, id, uid], function(err, result){
+		 var query = client.query('UPDATE "Friendship" SET "Active" = $1, "Blocked" = $2, "InitBlockUser" = $5 where "Id" = $3 AND "InitBlockUser" = $4 ',
+		[true, false, id, uid, null], function(err, result){
 		
 		    if(err) {
 		    	done();
