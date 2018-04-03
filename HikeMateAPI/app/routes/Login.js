@@ -17,7 +17,7 @@ module.exports = {
 			var dbSalt;
 			var dbUid;
 			var result = '';
-			var query = client.query({text:'SELECT "UserName", "Password", "Salt", "uid" FROM "Users" WHERE "UserName" = $1',values: [username]}, function(err, result){
+			var query = client.query({text:'SELECT "UserName", "Email", "Password", "Salt", "uid" FROM "Users" WHERE "UserName" = $1 OR "Email" = $1',values: [username]}, function(err, result){
 			}).on('row', function(row) {
 				dbUsername = row.UserName;
 				dbPassword = row.Password;
