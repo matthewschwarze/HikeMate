@@ -20,7 +20,7 @@ var tokenSign = require('./tokenSign');
 	router.route('/ResetPassword').post(ResetPassword.ResetPassword);
 	
 	console.log('1');
-	//protected routes
+//protected routes
 	
 	router.use(function(req, res, next) {
 
