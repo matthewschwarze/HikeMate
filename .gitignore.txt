@@ -1,3 +1,4 @@
 *.data
 *.rjpcfg
 *.rjproj
+HikeMate\HikeMateAPI\appconfig.js

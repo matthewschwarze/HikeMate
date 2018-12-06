@@ -20,7 +20,7 @@ module.exports = {
 		});
 	    
 	},
-	SendResetPassword: function (req, res, next){
+	SendResetPassword: function (req, res, next){	
 		if((req.body.Email == "" || req.body.Email == undefined))/* && (req.body.UserName == "" || req.body.UserName == undefined))*/{ //both missing
 			return res.json({success: false, data: {err: "One or more fields are empty"}});
 		}	
